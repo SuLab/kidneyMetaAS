@@ -2,9 +2,12 @@
 #### METAL FDR Launcher Script ####
 ###################################
 
+## run from kidneyMetaAS directory
+
+
 for number in {1..50}; do
 
-qsub -N metal_fdr_$number -v number=$number /gpfs/group/su/lhgioia/kidney/src/meta_manuscript/metal_fdr.sh
+qsub -N metal_fdr_$number -v number=$number ./src/metal_fdr.sh
 
 done
 
