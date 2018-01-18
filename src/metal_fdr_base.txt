@@ -1,0 +1,32 @@
+## metal script
+
+CLEAR
+SCHEME STDERR
+GENOMICCONTROL ON
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/fdr/plink/batch1/batch1_NUM_ITER.assoc.fisher.logor
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/fdr/plink/batch2/batch2_NUM_ITER.assoc.fisher.logor
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/fdr/plink/batch3/batch3_NUM_ITER.assoc.fisher.logor
+
+OUTFILE ./results/fdr/metal/results/NUM_ITER_ .txt
+
+ANALYZE
+
+QUIT
