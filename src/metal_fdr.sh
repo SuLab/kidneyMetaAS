@@ -18,6 +18,8 @@ sub="pass_anno"
 plink_src_dir="../kidney/results/plink/new_version"
 meta_dir="./results"
 vcf_dir="../kidney/results/gatk/new_final_recal_gVCFs"
+pheno_dir="./src/pheno"
+
 
 ## choose batch
 for batch in batch1 batch2 batch3; do
@@ -25,9 +27,6 @@ for batch in batch1 batch2 batch3; do
 ## set dynamic directories
 # store plink data
 plink_data_dir="${meta_dir}/fdr/plink/${batch}"
-# plink phenotype and samples list
-pheno_dir="./src/pheno"
-
 
 ## choose sample number based on batch number
 if [ "$batch" == "batch1" ]; then
@@ -39,7 +38,6 @@ fi
 if [ "$batch" == "batch3" ]; then
 	sample_number="48"
 fi
-
 
 ### PLINK
 ## create original raw plink files
