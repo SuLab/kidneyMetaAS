@@ -17,6 +17,7 @@ sub="pass_anno"
 ## set static directories
 plink_src_dir="../kidney/results/plink/new_version"
 meta_dir="./results"
+vcf_dir="../kidney/results/gatk/new_final_recal_gVCFs"
 
 ## choose batch
 for batch in batch1 batch2 batch3; do
@@ -42,7 +43,7 @@ fi
 
 ### PLINK
 ## create original raw plink files
-${plink_src_dir}/plink --vcf /gpfs/group/su/lhgioia/kidney/results/gatk/new_final_recal_gVCFs/${batch}_pass_anno.vcf --double-id --out ${plink_data_dir}/${batch}_raw${num}
+${plink_src_dir}/plink --vcf ${vcf_dir}/${batch}_pass_anno.vcf --double-id --out ${plink_data_dir}/${batch}_raw${num}
 
 ## take a thousand samples
 for i in {1..10}; do
