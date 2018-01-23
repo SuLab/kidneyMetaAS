@@ -15,8 +15,8 @@ num=$number
 sub="pass_anno"
 
 ## set static directories
-plink_src_dir="/gpfs/group/su/lhgioia/kidney/results/plink/new_version"
-meta_dir="/gpfs/group/su/lhgioia/kidneyMetaAS/results"
+plink_src_dir="../kidney/results/plink/new_version"
+meta_dir="./results"
 
 ## choose batch
 for batch in batch1 batch2 batch3; do
@@ -25,7 +25,7 @@ for batch in batch1 batch2 batch3; do
 # store plink data
 plink_data_dir="${meta_dir}/fdr/plink/${batch}"
 # plink phenotype and samples list
-pheno_dir="${meta_dir}/pheno"
+pheno_dir="./src/pheno"
 
 
 ## choose sample number based on batch number
@@ -69,9 +69,9 @@ done
 ### METAL Analysis
 for i in {1..10}; do
 
-metal_src_dir="/gpfs/group/su/lhgioia/kidney/results/metal/generic-metal"
+metal_src_dir="../kidney/results/metal/generic-metal"
 
-metal_base_txt_dir="/gpfs/group/su/lhioia/kidneyMetaAS/src"
+metal_base_txt_dir="./src"
 
 metal_fdr_txt_dir="${meta_dir}/fdr/metal/txt_files/"
 metal_results_dir="${meta_dir}/fdr/metal/permutations/"
