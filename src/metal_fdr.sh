@@ -12,7 +12,6 @@
 ## get analysis number (split into 50 jobs with 10 iterations per job)
 num=$number
 
-sub="pass_anno"
 
 ## set static directories
 plink_src_dir="../kidney/results/plink/new_version"
