@@ -34,6 +34,30 @@ ${plink_src_dir}/plink --bfile ${plink_results_dir}/${batch} --geno 0.25 --allow
 ## fisher's exact
 ${plink_src_dir}/plink --bfile ${plink_results_dir}/${batch} --fam ${plink_results_dir}/${batch}.fam --geno 0.25 --ci 0.95 --allow-no-sex --assoc fisher-midp perm --out ${plink_results_dir}/${batch}
 
+
+### Log Odds Ratio Calculation
+head -n1 ${plink_results_dir}/${batch}.assoc.fisher | awk '{$1=$1; print $0}' OFS='\t' > plink_ci.header
+sed 1d ${plink_results_dir}/${batch}.assoc.fisher | awk '{$9=log($9)/log(10); $10=sqrt(($9-(log($11)/log(10)))^2)/1.96 ;print $0}' OFS='\t' > ${plink_results_dir}/${batch}.assoc.fisher.logor.body
+cat plink_ci.header ${plink_results_dir}/${batch}.assoc.fisher.logor.body > ${plink_results_dir}/${batch}.assoc.fisher.logor
+
 done
 
-exit 0
+
+### METAL Analysis
+metal_src_dir="../kidney/results/metal/generic-metal"
+
+metal_base_txt_dir="./src"
+
+metal_fdr_txt_dir="${meta_dir}/fdr/metal/txt_files/"
+metal_results_dir="${meta_dir}/fdr/metal/permutations/"
+
+## create metal txt file
+# keywords to change: NUM, ITER
+sed "s/NUM/$num/g" ${metal_base_txt_dir}/metal_fdr_base.txt | \
+sed "s/ITER/$i/g" > ${metal_fdr_txt_dir}/${num}_${i}.txt
+
+## run metal
+${metal_src_dir}/metal ${metal_fdr_txt_dir}/${num}_${i}.txt
+
+
+exit=0
