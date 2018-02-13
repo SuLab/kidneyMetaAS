@@ -69,7 +69,7 @@ for i in {1..10}; do
 
 metal_src_dir="../kidney/results/metal/generic-metal"
 
-metal_base_txt_dir="./src"
+metal_base_txt_dir="./src/fdr"
 
 metal_fdr_txt_dir="${meta_dir}/fdr/metal/txt_files/"
 metal_results_dir="${meta_dir}/fdr/metal/permutations/"
