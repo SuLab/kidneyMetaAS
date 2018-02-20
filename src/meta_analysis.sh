@@ -19,7 +19,7 @@ for batch in batch1 batch2 batch3; do
 
 ## set dynamic directories
 # plink output
-plink_results_dir="${meta_dir}/meta/plink"
+plink_results_dir="${meta_dir}/meta"
 
 
 ## generate plink format
@@ -45,19 +45,10 @@ done
 
 ### METAL Analysis
 metal_src_dir="../kidney/results/metal/generic-metal"
-
 metal_base_txt_dir="./src"
 
-metal_fdr_txt_dir="${meta_dir}/fdr/metal/txt_files/"
-metal_results_dir="${meta_dir}/fdr/metal/permutations/"
-
-## create metal txt file
-# keywords to change: NUM, ITER
-sed "s/NUM/$num/g" ${metal_base_txt_dir}/metal_fdr_base.txt | \
-sed "s/ITER/$i/g" > ${metal_fdr_txt_dir}/${num}_${i}.txt
-
 ## run metal
-${metal_src_dir}/metal ${metal_fdr_txt_dir}/${num}_${i}.txt
+${metal_src_dir}/metal ${metal_base_txt_dir}/metal_run.txt
 
 
 exit=0
