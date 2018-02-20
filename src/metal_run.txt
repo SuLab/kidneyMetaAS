@@ -1,0 +1,32 @@
+## metal script
+
+CLEAR
+SCHEME STDERR
+GENOMICCONTROL ON
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/meta/batch1.assoc.fisher.logor
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/meta/batch2.assoc.fisher.logor
+
+MARKER SNP
+ALLELE A1 A2
+EFFECT OR
+PVALUE P
+STDERRLABEL SE
+PROCESS ./results/meta/batch3.assoc.fisher.logor
+
+OUTFILE ./results/meta/metal_output .txt
+
+ANALYZE
+
+QUIT
