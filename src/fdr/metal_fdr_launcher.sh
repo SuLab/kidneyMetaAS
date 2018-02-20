@@ -7,7 +7,7 @@
 
 for number in {1..50}; do
 
-qsub -N metal_fdr_$number -v number=$number ./src/metal_fdr.sh
+qsub -N metal_fdr_$number -v number=$number ./src/fdr/metal_fdr.sh
 
 done
 
