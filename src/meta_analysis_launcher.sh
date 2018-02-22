@@ -3,6 +3,6 @@
 ###################################
 
 ## run from kidneyMetaAS directory
-qsub -N meta_analysis ./src/meta_analysis.sh
+qsub -N meta_analysis -o ./results/logs/meta_analysis_standard_output.txt -e ./results/logs/meta_analysis_standard_error.txt ./src/meta_analysis.sh
 
 
