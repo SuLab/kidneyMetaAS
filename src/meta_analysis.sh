@@ -6,6 +6,9 @@
 #PBS -M lhgioia@scripps.edu
 ## Plink2 Analysis
 
+## move working directory to kidneyMetaAS
+echo $PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
 
 ## set static directories
 plink_src_dir="../kidney/results/plink/new_version"
