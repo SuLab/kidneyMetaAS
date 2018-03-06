@@ -25,7 +25,7 @@ PVALUE P
 STDERRLABEL SE
 PROCESS ./results/fdr/plink/batch3/batch3_NUM_ITER.assoc.fisher.logor
 
-OUTFILE ./results/fdr/metal/results/NUM_ITER_ .txt
+OUTFILE ./results/fdr/metal/permutations/NUM_ITER .txt
 
 ANALYZE
 
