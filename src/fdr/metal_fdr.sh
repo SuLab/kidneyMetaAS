@@ -9,6 +9,9 @@
 #### metal FDR analysis ####
 ############################
 
+## move to working directory
+cd $PBS_O_WORKDIR
+
 ## get analysis number (split into 50 jobs with 10 iterations per job)
 num=$number
 
@@ -56,9 +59,9 @@ ${plink_src_dir}/plink --bfile ${plink_data_dir}/${batch}_${num}_${i} --fam ${pl
 
 
 ### Log Odds Ratio Calculation
-head -n1 ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher | awk '{$1=$1; print $0}' OFS='\t' > plink_ci.header
+head -n1 ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher | awk '{$1=$1; print $0}' OFS='\t' > ${plink_data_dir}/plink_ci.header
 sed 1d ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher | awk '{$9=log($9)/log(10); $10=sqrt(($9-(log($11)/log(10)))^2)/1.96 ;print $0}' OFS='\t' > ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher.logor.body
-cat plink_ci.header ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher.logor.body > ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher.logor
+cat ${plink_data_dir}/plink_ci.header ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher.logor.body > ${plink_data_dir}/${batch}_${num}_${i}.assoc.fisher.logor
 
 done
 
