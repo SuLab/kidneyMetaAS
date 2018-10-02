@@ -1,10 +1,11 @@
 ## Association study of long-term kidney transplant rejection using whole-exome sequencing
 
 ### Manuscript
+[bioRxiv](https://www.biorxiv.org/)
 
 ### Available data:
 #### Sequencing and Variant Calls
-dbGaP submission in process
+[dbGaP](https://www.ncbi.nlm.nih.gov/gap/) submission in process
 
 #### Results
 [Zenodo](https://zenodo.org/)
