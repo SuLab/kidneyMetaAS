@@ -1,0 +1,100 @@
+---
+output:
+  html_document:
+    css: smaller_font.css
+---
+```{r warning=FALSE, error=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_knit$set(global.par = TRUE)
+```
+
+```{r fig.width=30, fig.height=15, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE, results='markup'}
+## fig.width = 30 & fig.height = 15 for report
+## fig.width = 20 & fig.height = 10 for main figure
+library("PerformanceAnalytics")
+library(rsnps)
+library(forestplot)
+#options(width=5000, digits=5)
+# par(mar=c(8, 6, 8, 2))
+par(mar=c(8, 6, 8, 2))
+
+source_directory <- "kidneyMetaAS/src/figures/"
+results_directory <- "kidneyMetaAS/results/meta/"
+
+source(paste(source_directory, "qq.R", sep = ""))
+source(paste(source_directory, "customManhattanP.R", sep = ""))
+
+
+#### QQ and Manhattan plots ####
+## batches
+## batch 1
+batch1plink <- read.table(paste(results_directory, "batch1.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch1plink)[8] <- "P.value"
+
+qq(batch1plink$P, main=paste("QQ Fisher's exact test for sequencing batch 1"), cex.main=3, cex.axis=2, cex.lab=2)
+
+snpsHi <- batch1plink[order(batch1plink$P.value), "SNP"][1:3]
+snpsHiOrdered <- batch1plink[which(batch1plink$SNP %in% snpsHi), "SNP"]
+manhattan(batch1plink[,c(1,3,2,8)], highlight=snpsHiOrdered, main="Manhattan Plot for Fisher's exact test for sequencing batch 1", cex.main=3, cex.axis=2, cex.lab=2)
+
+## batch 2
+batch2plink <- read.table(paste(results_directory, "batch2.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch2plink)[8] <- "P.value"
+
+qq(batch2plink$P, main=paste("QQ Fisher's exact test for sequencing batch 2"), cex.main=3, cex.axis=2, cex.lab=2)
+
+snpsHi <- batch2plink[order(batch2plink$P.value), "SNP"][c(1,2,4)]
+snpsHiOrdered <- batch2plink[which(batch2plink$SNP %in% snpsHi), "SNP"]
+manhattan(batch2plink[,c(1,3,2,8)], highlight=snpsHiOrdered, main="Manhattan Plot for Fisher's exact test for sequencing batch 2", cex.main=3, cex.axis=2, cex.lab=2)
+
+## batch 3
+batch3plink <- read.table(paste(results_directory, "batch3.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch3plink)[8] <- "P.value"
+
+qq(batch3plink$P, main=paste("QQ Fisher's exact test for sequencing batch 3"), cex.main=3, cex.axis=2, cex.lab=2)
+
+snpsHi <- batch3plink[order(batch3plink$P.value), "SNP"][1:3]
+snpsHiOrdered <- batch3plink[which(batch3plink$SNP %in% snpsHi), "SNP"]
+manhattan(batch3plink[,c(1,3,2,8)], highlight=snpsHiOrdered, main="Manhattan Plot for Fisher's exact test for sequencing batch 3", cex.main=3, cex.axis=2, cex.lab=2)
+
+
+## meta-analysis
+snpsHi <- c("rs2368392", "rs7300549", "rs8102349")
+
+plinkCoord <- unique(rbind(batch1plink[, 1:3], batch2plink[, 1:3], batch3plink[, 1:3]))
+plinkCoord <- plinkCoord[order(plinkCoord$CHR, plinkCoord$BP),]
+
+metalRaw <- read.table(paste(results_directory, "metal_output1.txt", sep = ""), stringsAsFactors=FALSE, header=T)
+names(metalRaw)[c(1,6)] <- c("SNP", "P.value")
+
+metalRaw[which(metalRaw$P.value == "nane-nan"), "P.value"] <- 1
+metalRaw$P.value <- as.numeric(metalRaw$P.value)
+
+metalRaw <- merge(plinkCoord, metalRaw, by = "SNP")
+
+metalRaw <- metalRaw[order(metalRaw$CHR, metalRaw$BP),]
+
+qq(metalRaw$P.value, main=paste("QQ Inverse Variance Fixed Effects Meta-analysis with Genomic Control"), cex.main=3, cex.axis=2, cex.lab=2)
+
+snpsHiOrdered <- metalRaw[which(metalRaw$SNP %in% snpsHi), "SNP"]
+manhattan(metalRaw[,c(2,3,1,8)], highlight=snpsHiOrdered, main="Manhattan Plot for Inverse Variance Fixed Effects Meta-analysis with Genomic Control", cex.main=3, cex.axis=2, cex.lab=2)
+
+## MAIN FIGURE
+# snpsHiOrdered <- metalRaw[which(metalRaw$SNP %in% snpsHi), "SNP"]
+# manhattan(metalRaw[,c(2,3,1,8)], highlight=snpsHiOrdered, main="", cex.main=3, cex.axis=2, cex.lab=2)
+
+## only triple positive (+++) meta-analysis results
+# metalSorted <- read.table(paste(results_directory, "metal_output_sorted.tsv", sep = ""), stringsAsFactors=FALSE, header=F)
+# names(metalSorted)[c(1,6)] <- c("SNP", "P.value")
+# 
+# plinkAnno <- read.table("~/Documents/kidney/batchALL.assoc.fisher", sep="", stringsAsFactors=FALSE, header=T)
+# 
+# metalSorted <- merge(plinkAnno[,1:3], metalSorted, by="SNP")
+# 
+# metalSorted <- metalSorted[order(metalSorted$CHR, metalSorted$BP),]
+# 
+# qq(metalSorted$P.value, main=paste("QQ Inverse Variance Fixed Effects Meta-analysis with Genomic Control"), cex.main=3, cex.axis=2, cex.lab=2)
+# 
+# snpsHiOrdered <- metalSorted[which(metalSorted$SNP %in% snpsHi), "SNP"]
+# manhattan(metalSorted[,c(2,3,1,8)], highlight=snpsHiOrdered, main="Manhattan Plot for Inverse Variance Fixed Effects Meta-analysis with Genomic Control", cex.main=3, cex.axis=2, cex.lab=2)
+
+```
