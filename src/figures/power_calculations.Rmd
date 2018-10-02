@@ -1,5 +1,5 @@
 ---
-title: "Validation Power"
+title: "Power Calculations"
 output: html_document
 ---
 
