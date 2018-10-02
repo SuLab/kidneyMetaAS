@@ -1,4 +1,4 @@
-# "Association study of long-term kidney transplant rejection using whole-exome sequencing"
+## Association study of long-term kidney transplant rejection using whole-exome sequencing
 
 ### Manuscript
 
