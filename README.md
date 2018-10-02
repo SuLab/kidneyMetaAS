@@ -1,5 +1,13 @@
-# kidneyMetaAS
-Scripts for "Association study of long-term kidney transplant rejection using whole-exome sequencing"
+# "Association study of long-term kidney transplant rejection using whole-exome sequencing"
+
+### Manuscript
+
+### Available data:
+#### Sequencing and Variant Calls
+dbGaP submission in process
+
+#### Results
+[Zenodo](https://zenodo.org/)
 
 ### src directory descriptions
 
