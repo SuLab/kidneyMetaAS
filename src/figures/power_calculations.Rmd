@@ -1,0 +1,58 @@
+---
+title: "Validation Power"
+output: html_document
+---
+
+```{r fig.width=12, fig.height=9, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE}
+#### Power Calculation for Kidney Transplant Association Study ####
+
+library("statmod")
+
+#### Create 6 control frequency dataframes for 8 samples sizes each ####
+sizes <- c(100, 200, 300, 400, 500, 750, 1000, 2500)
+controlFreqs <- c(0.01, 0.05, 0.1, 0.15, 0.25, 0.35, 0.45)
+# controlFreqs <- 0.1
+caseFreq <- seq(0, 0.995, 0.01)
+
+headersPower <- paste(rep("Power", length(sizes)), "N", sizes, sep = "")
+
+controlFreq0.01 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.05 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.1 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.15 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.25 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.35 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+controlFreq0.45 <- data.frame(matrix(vector(), 100, length(sizes)+1, dimnames=list(c(), c("OR", headersPower))), stringsAsFactors=F)
+
+powerframes <- list(controlFreq0.01, controlFreq0.05, controlFreq0.1, controlFreq0.15, controlFreq0.25, controlFreq0.35, controlFreq0.45)
+
+for(i in 1:length(controlFreqs)){
+  for(j in 1:100){
+    powerframes[[i]]$OR <- (caseFreq/controlFreqs[i])/((1-caseFreq)/(1-controlFreqs[i]))
+    for(k in 1:length(sizes)){
+      powerframes[[i]][j,k+1] <- power.fisher.test(controlFreqs[i], caseFreq[j], n1=sizes[k], n2=sizes[k], alpha=0.0000005, nsim=500, alternative="two.sided")
+    }
+  }
+}
+
+
+#par(mfrow=c(1,1), lwd=2, mai=c(1.1,1.1,1,2.5), xpd=TRUE)
+par(mfrow=c(1,1), lwd=2, mai=c(1.1,1.1,1,2.5), xpd=NA)
+grays <- paste("gray", round(seq(90, 20, by=((20-90)/(length(sizes)-1)))), sep="")
+for(i in 1:length(controlFreqs)){
+  
+  ## for printing plots to device
+  # png(paste("~/Documents/kidney/paper_negative_results/figures/results/power_ctrlfreq", controlFreqs[i], ".png", sep = ""))
+  
+  plot(log10(powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), "OR"]), powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), 2], type = "l", col=grays[1], xlim = c(0, 1), ylim=c(0,1.01), main = paste("Power for control freq = ", controlFreqs[i], "  &  alpha = 5e-7", sep=""), xlab = "log(Odds Ratio)", ylab = "Power", cex=2, cex.main=2, cex.axis=1.65, cex.lab=1.65)
+  #axis(1, at=seq(-1, 1, 0.25), pos=1)
+  #axis(2, at=seq(0, 1, 0.2), cex=2)
+  for(j in 3:(length(sizes)+1)){
+    lines(log10(powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), "OR"]), powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97),j], col=grays[j-1])
+  }
+  legend(1.04, 0.685, sizes*2, lty=c(1,1), lwd=c(2,2), col=grays, title="sample sizes", cex=1.6)
+  
+  ## for printng plots to device
+  # dev.off()
+}
+```
