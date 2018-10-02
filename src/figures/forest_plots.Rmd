@@ -1,0 +1,154 @@
+---
+output:
+  html_document:
+    css: smaller_font.css
+---
+```{r warning=FALSE, error=FALSE, message=FALSE, echo=FALSE}
+knitr::opts_knit$set(global.par = TRUE)
+```
+
+```{r fig.width=30, fig.height=8, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE, results='markup'}
+library("PerformanceAnalytics")
+library(rsnps)
+library(forestplot)
+#options(width=5000, digits=5)
+par(mar=c(8, 6, 8, 2))
+
+results_directory <- "kidneyMetaAS/results/meta/"
+
+
+#### Load Data ####
+## batches
+## batch 1
+batch1plink <- read.table(paste(results_directory, "batch1.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch1plink)[8] <- "P.value"
+
+## batch 2
+batch2plink <- read.table(paste(results_directory, "batch2.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch2plink)[8] <- "P.value"
+
+## batch 3
+batch3plink <- read.table(paste(results_directory, "batch3.assoc.fisher.logor", sep = ""), stringsAsFactors=FALSE, header=T)
+names(batch3plink)[8] <- "P.value"
+
+## meta-analysis
+snpsHi <- c("rs2368392", "rs7300549", "rs8102349")
+
+plinkCoord <- unique(rbind(batch1plink[, 1:3], batch2plink[, 1:3], batch3plink[, 1:3]))
+plinkCoord <- plinkCoord[order(plinkCoord$CHR, plinkCoord$BP),]
+
+metalRaw <- read.table(paste(results_directory, "metal_output1.txt", sep = ""), stringsAsFactors=FALSE, header=T)
+names(metalRaw)[c(1,6)] <- c("SNP", "P.value")
+
+metalRaw[which(metalRaw$P.value == "nane-nan"), "P.value"] <- 1
+metalRaw$P.value <- as.numeric(metalRaw$P.value)
+
+metalRaw <- merge(plinkCoord, metalRaw, by = "SNP")
+
+metalRaw <- metalRaw[order(metalRaw$CHR, metalRaw$BP),]
+
+
+#### Forest Plots ####
+metalSorted <- read.table(paste(results_directory, "metal_output_sorted.tsv", sep = ""), stringsAsFactors=FALSE, header=F)
+names(metalSorted)[c(1,4,5,6)] <- c("SNP", "Effect", "StdErr", "P.value")
+metal <- subset(metalSorted, SNP %in% snpsHi)
+
+fisherList <- list(batch1 = batch1plink, batch2 = batch2plink, batch3 = batch3plink)
+
+annotations <- suppressWarnings(NCBI_snp_query(metal$SNP))
+names(annotations)[3] <- "SNP"
+names(annotations)[9] <- "1KG.MAF"
+metal <- merge(metal, annotations[,c(3,5,9)], by="SNP")
+metal <- metal[order(metal$P.value),]
+names(metal)[6] <- "meta_P.value"
+
+batches <- c("batch1", "batch2", "batch3")
+for(batch in batches){
+  
+  plink <- subset(fisherList[[batch]], SNP %in% snpsHi)
+  
+  hwe <- read.table(paste(results_directory, batch, ".hwe", sep=""), stringsAsFactors=FALSE, header=T)
+  
+  hwe <- subset(hwe, SNP %in% snpsHi)
+  
+  hweAll <- subset(hwe, TEST=="ALL")
+  names(hweAll)[6:9] <- c("hweAll_Geno", "hweAll_ObsHet", "hweAll_ExpHet", "hweAll_P")
+  hweCase <- subset(hwe, TEST=="AFF")
+  names(hweCase)[6:9] <- c("hweCase_Geno", "hweCase_ObsHet", "hweCase_ExpHet", "hweCase_P")
+  hweControl <- subset(hwe, TEST=="UNAFF")
+  names(hweControl)[6:9] <- c("hweControl_Geno", "hweControl_ObsHet", "hweControl_ExpHet", "hweControl_P")
+  
+  plinkAnno <- cbind(plink, hweAll[,c(6,9)])
+  plinkAnno <- cbind(plinkAnno, hweCase[,c(6,9)])
+  plinkAnno <- cbind(plinkAnno, hweControl[,c(6,9)])
+  
+  plinkAnno$F_A <- signif(plinkAnno$F_A, 2)
+  plinkAnno$F_U <- signif(plinkAnno$F_U, 2)
+  
+  ## adds genotype counts
+  # plinkAnno$F_A <- paste(plinkAnno$F_A, " (", plinkAnno$hweCase_Geno, ")", sep = "")
+  # plinkAnno$F_U <- paste(plinkAnno$F_U, " (", plinkAnno$hweControl_Geno, ")", sep = "")
+  
+  plinkAnno$OR <- 10^plinkAnno$OR
+  
+  plinkAnno$L95 <- signif(plinkAnno$L95, 3)
+  plinkAnno$U95 <- signif(plinkAnno$U95, 3)
+  plinkAnno$OR <- signif(plinkAnno$OR, 3)
+  plinkAnno$P.value <- signif(plinkAnno$P.value, 3)
+  
+  assign(paste(batch, "fisherPlink", sep=""), plinkAnno[,c("CHR", "SNP", "A1", "F_A", "F_U", "A2", "P.value", "OR", "L95", "U95", "hweAll_Geno", "hweCase_Geno", "hweControl_Geno")])
+}
+
+metal$Effect <- 10^metal$Effect
+metal$StdErr <- 10^metal$StdErr
+
+metal$Effect <- signif(metal$Effect, 3)
+metal$StdErr <- signif(metal$StdErr, 3)
+metal$meta_P.value <- signif(metal$meta_P.value, 3)
+metal$`1KG.MAF` <- signif(metal$`1KG.MAF`, 3)
+
+
+for(snp in metal$SNP){
+  
+  df <-
+    structure(list(
+      mean  = c(NA, batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "OR"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "OR"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "OR"], NA, abs(metal[which(metal$SNP==snp), "Effect"])), 
+      lower = c(NA, batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "L95"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "L95"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "L95"], NA, (abs(metal[which(metal$SNP==snp), "Effect"])-1.96*metal[which(metal$SNP==snp), "StdErr"])),
+      upper = c(NA, batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "U95"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "U95"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "U95"], NA, (abs(metal[which(metal$SNP==snp), "Effect"])+1.96*metal[which(metal$SNP==snp), "StdErr"]))),
+      .Names = c("mean", "lower", "upper"), 
+      row.names = c(NA, -7L), 
+      class = "data.frame")
+  
+  tabletext<-cbind(
+    c("Cohort", "batch 1", "batch 2", "batch 3", NA, "Summary"),
+    c("case MAF", batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "F_A"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "F_A"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "F_A"], NA, NA),
+    c("ctrl MAF", batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "F_U"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "F_U"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "F_U"], NA, NA),
+    c("Odds Ratio", batch1fisherPlink[which(batch1fisherPlink$SNP==snp), "OR"], batch2fisherPlink[which(batch2fisherPlink$SNP==snp), "OR"], batch3fisherPlink[which(batch3fisherPlink$SNP==snp), "OR"], NA, abs(metal[which(metal$SNP==snp), "Effect"])))
+  
+  own <- fpTxtGp()
+  
+  forestplot(tabletext, 
+             df,
+             new_page = TRUE,
+             is.summary=c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE),
+             xlog=FALSE,
+             clip=c(-10,10),
+             align = c("l", "c", "c", "c"),
+             xlab="Odds Ratio",
+             lwd.xaxis = 2.5,
+             lwd.zero = 5,
+             lwd.ci = 4,
+             boxsize = 0.8,
+             zero=1,
+             graphwidth = unit(30, "cm"),
+             colgap = unit(4, "mm"),
+             line.margin = unit(1, "mm"),
+             col=fpColors(box="gray25",line="gray30", summary="black"),
+             title=paste(snp, "    (", metal[which(metal$SNP==snp), "Gene"], ")    p-value =", metal[which(metal$SNP==snp), "meta_P.value"], "    1000g MAF =", metal[which(metal$SNP==snp), "1KG.MAF"]),
+             txt_gp = fpTxtGp(cex = 3,
+                              xlab = gpar(cex = 3),
+                              ticks = gpar(cex = 3)),
+             digitsize=10)
+}
+
+```
