@@ -3,11 +3,11 @@ Scripts for "Association study of long-term kidney transplant rejection using wh
 
 ### Src directory descriptions
 
-* [figures](./src/figures):
-scripts to create figures
-
 * [main_analysis](./src/main_analysis):
 main analysis including [Plink](https://www.cog-genomics.org/plink2) and [METAL](https://genome.sph.umich.edu/wiki/METAL_Documentation) scripts
+
+* [figures](./src/figures):
+scripts to create figures
 
 * [fdr](./src/fdr):
 false discovery rate analysis
