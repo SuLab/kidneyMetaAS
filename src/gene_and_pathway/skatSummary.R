@@ -2,7 +2,7 @@
 skat_dir <- "kidneyMetaAS/results/gene_and_pathway/"
 
 #### Import SKAT Results ####
-batchALLskatCR <- read.csv(paste(skat_dir, "batchAll_cr_results", sep=""), header=T)
+batchALLskatCR <- read.csv(paste(skat_dir, "skat_cr_results", sep=""), header=T)
 
 #### Create Summary Table of SKAT Results ####
 batchALLskatCRSig <- batchALLskatCR[which(batchALLskatCR$P.value < 0.0005),]

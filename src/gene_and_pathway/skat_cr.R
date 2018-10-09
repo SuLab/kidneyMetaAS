@@ -17,4 +17,4 @@ obj <- SKAT_Null_Model_MomentAdjust(y ~ 1)
 testCR <- SKAT_CommonRare.SSD.All(Open_SSD(paste(skat_dir, "batchALL.SSD", sep=""),
  paste(skat_dir, "batchALL.skatInfo", sep="")), obj, method="A")
 
-write.csv(testCR$results[order(testCR$results$P.value),], file=paste(skat_dir, "batchAll_cr_results.csv", sep=""), row.names=FALSE)
+write.csv(testCR$results[order(testCR$results$P.value),], file=paste(skat_dir, "skat_cr_results.csv", sep=""), row.names=FALSE)
