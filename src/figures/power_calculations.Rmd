@@ -44,7 +44,7 @@ for(i in 1:length(controlFreqs)){
   ## for printing plots to device
   # png(paste("~/Documents/kidney/paper_negative_results/figures/results/power_ctrlfreq", controlFreqs[i], ".png", sep = ""))
   
-  plot(log10(powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), "OR"]), powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), 2], type = "l", col=grays[1], xlim = c(0, 1), ylim=c(0,1.01), main = paste("Power for control freq = ", controlFreqs[i], "  &  alpha = 5e-7", sep=""), xlab = "log(Odds Ratio)", ylab = "Power", cex=2, cex.main=2, cex.axis=1.65, cex.lab=1.65)
+  plot(log10(powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), "OR"]), powerframes[[i]][which(powerframes[[i]]$OR > 0.97 & powerframes[[i]]$OR < 10.97), 2], type = "l", col=grays[1], xlim = c(0, 1), ylim=c(0,1.01), main = paste("Power for control freq = ", controlFreqs[i], "  &  alpha = 5e-7", sep=""), xlab = expression("log"[10]*"(Odds Ratio)"), ylab = "Power", cex=2, cex.main=2, cex.axis=1.65, cex.lab=1.65)
   #axis(1, at=seq(-1, 1, 0.25), pos=1)
   #axis(2, at=seq(0, 1, 0.2), cex=2)
   for(j in 3:(length(sizes)+1)){
