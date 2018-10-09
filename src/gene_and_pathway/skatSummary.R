@@ -1,5 +1,5 @@
 
-skat_dir <- "kidneyMetaAS/results/skat/"
+skat_dir <- "kidneyMetaAS/results/gene_and_pathway/"
 
 #### Import SKAT Results ####
 batchALLskatCR <- read.csv(paste(skat_dir, "batchAll_cr_results", sep=""), header=T)
