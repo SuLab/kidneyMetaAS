@@ -8,7 +8,7 @@
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) submission in process
 
 #### Results
-[Zenodo](https://zenodo.org/)
+[Zenodo](https://zenodo.org/record/1453460)
 
 ### src directory descriptions
 
