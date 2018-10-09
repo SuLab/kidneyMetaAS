@@ -1,0 +1,29 @@
+---
+title: "GSEA Results Summary"
+output: html_document
+---
+
+
+```{r text.width=400, fig.width=30, fig.height=10, warning=FALSE, error=FALSE, message=FALSE, echo=FALSE}
+options(width=100)
+
+results_dir <- "kidneyMetaAS/results/gene_and_pathway/"
+
+batchALLhallmarks <- read.table(paste(results_dir, "batchALL.xls", sep="")
+
+#batchALLhallmarks <- read.table("~/gsea_home/batchALL/hallmarks/batchALL_hallmarks.GseaPreranked.1436998350928/gsea_report_for_na_pos_1436998350928.xls", header=T, nrows=10, fill=T)
+#batchALLc2all <- read.table("~/gsea_home/batchALL/c2all/batchALL_c2all.GseaPreranked.1436998388018/gsea_report_for_na_pos_1436998388018.xls", header=T, nrows=10, fill=T)
+#batchALLc5go <- read.table("~/gsea_home/batchALL/c5go/batchALL_c5go.GseaPreranked.1437000065205/gsea_report_for_na_pos_1437000065205.xls", header=T, nrows=10, fill=T)
+#batchALLc7imm <- read.table("~/gsea_home/batchALL/c7imm/batchALL_c7imm.GseaPreranked.1437000591362/gsea_report_for_na_pos_1437000591362.xls", header=T, nrows=10, fill=T)
+
+#### BatchALL ####
+print("    ", quote=F)
+print("    ", quote=F)
+print("BatchALL (Mixed)", quote=F)
+
+batchALLhallmarks <- batchALLhallmarks[,c(1,5:14)]
+names(batchALLhallmarks) <- c("gene_set", "size", "ES", "NES", "Nom_p", "FDR_q", "FWER_p", "rank_at_max", "LE_tags", "LE_list", "LE_signal")
+batchALLhallmarks <- subset(batchALLhallmarks, Nom_p<0.05)
+if(nrow(batchALLhallmarks)>0){ print(batchALLhallmarks, row.names=F)}
+
+```
